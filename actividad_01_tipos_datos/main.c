@@ -1,1 +1,0 @@
-(Agrega aquí tu código en C para la actividad de tipos de datos)
