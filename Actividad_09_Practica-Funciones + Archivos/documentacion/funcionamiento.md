@@ -1,0 +1,11 @@
+# Análisis de Funcionamiento y Corrección de Flujos Lógicos
+
+El software opera bajo una secuencia lineal dividida en responsabilidades funcionales aisladas, estructuradas de la siguiente manera:
+
+1. **Abstracción del Tamaño mediante Constantes (`#define TAMANO 6`):** Reemplaza el uso de números cableados (*magic numbers*). Al invocarse a lo largo del programa, el compilador sustituye simbólicamente la palabra por el valor `6`, facilitando que el tamaño total del vector original y de destino se configure desde una sola línea de control.
+2. **Captura por Referencia (`capturar`):** Al invocar `capturar(arregloOriginal, TAMANO);`, el programa no copia el vector en la pila de memoria; envía la dirección del byte de inicio. El ciclo interno pobla directamente el espacio original mediante solicitudes dinámicas con `scanf`.
+3. **Aislamiento de Componentes Impares (`filtrar`):** El programa barre el arreglo de origen casilla por casilla. Utiliza la operación condicional de residuo matemático: `origen[i] % 2 != 0`. Si el número es impar (el residuo de dividirlo entre 2 es diferente de cero), se copia en la posición `j` del arreglo de destino, e inmediatamente se incrementa `j++`. Esta variable guarda el conteo exacto de inserciones y es devuelta a `main` como la nueva dimensión del arreglo resultante.
+4. **Persistencia y Corrección de Formato (`guardar`):** Declara el flujo estructurado `FILE *f` y asocia el archivo físico `"resultado.txt"` en modo de escritura destructiva (`"w"`). El bloque incorpora un filtro de validación indispensable:
+   - **`if (f != NULL)`:** Asegura que el sistema operativo haya otorgado los descriptores y permisos correspondientes. Si es afirmativo, ejecuta el ciclo de escritura.
+   - **Formateo Espaciado (`fprintf`):** Se modificó la escritura a `fprintf(f, "%d ", v[i]);`. Agregar el espacio en blanco es crucial; de lo contrario, números como `1`, `3` y `5` se escribirían en texto plano pegados como `135`, causando una ambigüedad total. El espacio garantiza registros legibles independientes.
+   - **Cierre de Flujos (`fclose`):** Vacía los buffers intermedios de memoria y rompe el enlace de bloqueo con el sistema operativo para asegurar el resguardo de la información.
