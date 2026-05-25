@@ -1,0 +1,42 @@
+name: Deploy Portafolio Web
+
+on:
+  push:
+    branches: ["main"] # Si tu rama principal se llama master, cambia "main" por "master"
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del Repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar GitHub Pages
+        uses: actions/configure-pages@v4
+
+      - name: Construir con Jekyll (Markdown a Web)
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./
+          destination: ./_site
+
+      - name: Subir Evidencias y Documentación
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./_site
+
+      - name: Desplegar Sitio Web
+        id: deployment
+        uses: actions/deploy-pages@v4
